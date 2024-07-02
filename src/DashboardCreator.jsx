@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
-import "./DashboardCreator.css";
+import "./DashboardCreator.css"; 
 
 const DashboardCreator = () => {
   const [dashboardTitle, setDashboardTitle] = useState("");
@@ -42,7 +42,7 @@ const DashboardCreator = () => {
         {
           headers: {
             Authorization:
-              "Bearer {Grafana Service Account key}",
+              "Bearer {Grafana Service Account Key}",
             "Content-Type": "application/json",
           },
         }
@@ -58,7 +58,7 @@ const DashboardCreator = () => {
     const formData = new FormData();
     formData.append("file", e.target.files[0]);
 
-    setLoading(true); 
+    setLoading(true); // Show loading indicator
 
     const response = await axios.post(
       "http://localhost:8000/get_csv_schema/",
@@ -88,7 +88,7 @@ const DashboardCreator = () => {
       }
     );
 
-    setLoading(false); 
+    setLoading(false); // Hide loading indicator
 
     console.log("aiResponse: ", aiResponse.data);
   
@@ -108,6 +108,11 @@ const DashboardCreator = () => {
     setSentence(e.target.value);
   };
 
+  const startNewQuery = () => {
+    setCurrentQueryIndex(null);
+    setSentence("");
+  };
+
   const handleQueryClick = (index) => {
     setCurrentQueryIndex(index);
     setSentence(chatHistory[index].sentence);
@@ -118,7 +123,7 @@ const DashboardCreator = () => {
       const formData = new FormData();
       formData.append("file", csvFile);
       formData.append("sentence", sentence);
-      formData.append("metadata", JSON.stringify(metadata));  // Send metadata as JSON string
+      formData.append("metadata", JSON.stringify(metadata));  
       formData.append("CsvSchema", features);
       const response = await axios.post(
         "http://localhost:8000/generate_sql/",
@@ -145,7 +150,7 @@ const DashboardCreator = () => {
           {
             headers: {
               Authorization:
-                "Bearer {Grafana Service Account key}",
+                "Bearer {Grafana Service Account Key}",
               "Content-Type": "application/json",
             },
           }
@@ -190,7 +195,7 @@ const DashboardCreator = () => {
           {
             headers: {
               Authorization:
-                "Bearer {Grafana Service Account key}",
+                "Bearer {Grafana Service Account Key}",
               "Content-Type": "application/json",
             },
           }
@@ -202,7 +207,7 @@ const DashboardCreator = () => {
         setChatHistory([...chatHistory, { sentence, panelUrl }]);
       }
       setSentence("");
-      setCurrentQueryIndex(chatHistory.length);
+      setCurrentQueryIndex(chatHistory.length); // Reset to show the latest query
     } catch (error) {
       console.error("Error creating panel:", error);
     }
@@ -249,7 +254,7 @@ const DashboardCreator = () => {
             {loading && (
               <div className="loading-indicator">
                 <div className="spinner"></div>
-                <p>Loading metadata...</p>
+                <p>Fetching metadata...</p>
               </div>
             )}
             {csvUploaded && (
@@ -262,7 +267,7 @@ const DashboardCreator = () => {
                       type="text"
                       value={feature.name}
                       readOnly
-                      style={{  marginBottom: "5px", marginRight:"30px" }} 
+                      style={{ marginBottom: "5px", marginRight:"10px" }} 
                     />
                     <label>Description: </label>
                     <input
@@ -271,16 +276,25 @@ const DashboardCreator = () => {
                       onChange={(e) =>
                         handleMetadataChange(index, "description", e.target.value)
                       }
-                      style={{ marginBottom: "5px", marginRight:"30px",width:"300px" }} 
+                      style={{ marginBottom: "5px", marginRight:"10px" }} 
                     />
                     <label>Data Type: </label>
                     <input
                       type="text"
-                      value={feature.data_type}
+                      value={feature.dataType}
                       onChange={(e) =>
-                        handleMetadataChange(index, "data_type", e.target.value)
+                        handleMetadataChange(index, "dataType", e.target.value)
                       }
-                      style={{ marginBottom: "5px",width:"100px"}}
+                      style={{ marginBottom: "5px", marginRight:"10px" }}
+                    />
+                     <label>PreferredVisualizationType: </label>
+                    <input
+                      type="text"
+                      value={feature.preferredVisualizationType}
+                      onChange={(e) =>
+                        handleMetadataChange(index, "preferredVisualizationType", e.target.value)
+                      }
+                      style={{ marginBottom: "5px" }}
                     />
                   </div>
                 ))}
@@ -302,7 +316,9 @@ const DashboardCreator = () => {
       )}
       {page === 2 && (
       <div className="dashboard-right">
+      {/* Remove the heading "Dashboard" */}
       <div className="chat-history">
+        {/* Remove the heading "Chat History" */}
         <ul>
           {chatHistory.map((chat, index) => (
             <li
@@ -361,5 +377,3 @@ const DashboardCreator = () => {
 };
 
 export default DashboardCreator;
-
-
