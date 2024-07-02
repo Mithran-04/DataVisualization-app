@@ -156,7 +156,7 @@ async def generate_sql(file: UploadFile = File(...), sentence: str = Form(...), 
             graph_type = "timeseries"
         elif "scatter" in graph_type:
             graph_type = "xychart"
-        elif "timeseries" in graph_type:
+        elif "time" in graph_type:
             graph_type = "timeseries"
         elif "pie" in graph_type:
             graph_type = "piechart"
@@ -202,6 +202,7 @@ async def generate_sql(file: UploadFile = File(...), sentence: str = Form(...), 
                 - Ensure the query format aligns with the specified sentence and the table structure.
                 - Use appropriate JOIN operations if necessary to combine data from multiple tables.
                 - If a percentage value is stored as text in the format '90%', remove the '%' symbol and convert the text to numeric before performing any calculations.
+                - Filter out NULL values and empty strings (e.g., '') for percentage fields before converting them to numeric in the WHERE clause.
                 - Apply necessary filters and conditions to accurately reflect the sentence.
                 """
     
